@@ -7,6 +7,16 @@
     <title>Markdown Previewer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="./js/marked.js"></script>
+    <script>
+        function updatePreview() {
+            let previewElement = document.getElementById("preview");
+            let editorValue = document.getElementById("editor").value;
+            let markedUpString = marked.parse(editorValue);
+            previewElement.innerHTML = markedUpString;
+        }
+            
+    </script>
 </head>
 
 <body>
@@ -19,7 +29,7 @@
         <div class="row">
             <div class="col-6 bg-info">
                 <p>The editor will be here</p>
-                <textarea id="editor"></textarea>
+                <textarea id="editor" onkeyup="updatePreview()"></textarea>
             </div>
             <div class="col-6 bg-secondary">
                 <p>The markdown previewer will be here</p>
