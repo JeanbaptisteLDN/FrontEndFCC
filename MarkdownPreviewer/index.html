@@ -17,17 +17,17 @@
         }
 
         function setDefault() {
-            let defaultText = `
+            let defaultText = `\
 # Markdown Previewer
-## by Jean-Baptiste
-[About my GitHub](https://github.com/JeanbaptisteLDN).
+## by  JBW
+[Jean-Baptiste](https://github.com/JeanbaptisteLDN)
 ![Bootstrap](https://camo.githubusercontent.com/2512b49c89512f2ff3718f7257f48ed5c46a4e331abbd890b6c5e8c0e458434f/68747470733a2f2f676574626f6f7473747261702e636f6d2f646f63732f352e322f6173736574732f6272616e642f626f6f7473747261702d6c6f676f2d736861646f772e706e67)
 
-\`Example for inline code\`
+\` This is an example of inline code: x+1=4 \`
 
 \`\`\`
 function example() {
-    return MultiLine;
+    return result;
 }
 \`\`\`
 
@@ -36,11 +36,14 @@ function example() {
 - A            
 - Long
 - List
+- of
+- Items
 
 > This is an example of block code
 
-**Bold Text**
+**This text is bold**
             `;
+            marked.setOptions({breaks: true});
             let editorField = document.getElementById("editor");
             previewElement = document.getElementById("preview");
             editorField.value = defaultText;
@@ -49,20 +52,22 @@ function example() {
     </script>
 </head>
 
-<body onload = setDefault()>
+<body onload = setDefault() class="bg-success">
     <div class="container-fluid">
         <div class="row">
-            <div class="col text-center text-white bg-success">
+            <div class="col text-center text-white my-3">
                 <h1>Markdown Previewer</h1>
             </div>
         </div>
-        <div class="row">
-            <div class="col-6 bg-info">
-                <p>The editor will be here</p>
-                <textarea id="editor" onkeyup="updatePreview()"></textarea>
+        <div class="row my-3">
+            <div class="col-6 bg-info d-flex flex-column">
+                <h2 class="text-white text-center my-3">Editor</h2>
+                <div class="form-group flex-grow-1 d-flex flex-column">
+                    <textarea id="editor" onkeyup="updatePreview()" class="form-control flex-grow-1 my-3"></textarea>
+                </div>
             </div>
-            <div class="col-6 bg-secondary">
-                <p>The markdown previewer will be here</p>
+            <div class="col-6 bg-info">
+                <h2 class="text-white text-center my-3">Preview</h2>
                 <div id="preview"></div>
             </div>
         </div>
