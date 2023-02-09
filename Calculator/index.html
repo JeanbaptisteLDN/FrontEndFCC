@@ -9,18 +9,105 @@
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 
     <script>
-        function updateDisplay(number) {
+        let trailingResult = 0;
+        let operationOptions = ['add', 'subtract', 'multiply', 'divide'];
+        let workingOperation = "";
+
+        function updateDisplay(input) {
             let display = document.getElementById("display");
-            if (display.innerHTML === "0") {
-                display.innerHTML = number;
+            let secondaryDisplay = document.getElementById("secondaryDisplay");
+
+            if (display.innerHTML === "0" && operationOptions.indexOf(input) === -1) {
+                if (input === 'decimal') {
+                    display.innerHTML = "0.";
+                }
+                else if(input === "negative-value") {
+                    if (display.innerHTML.indexOf("-1") === -1) {
+                display.innerHTML ="-" + display.innerHTML;}
+                else if (display.innerHTML.indexOf("-1") > -1) {
+                    display.innerHTML=display.innerHTML.slice(1, display.innerHTML.length);
+                }
+                }
+                else {
+                display.innerHTML = input;}
+            }
+
+            else if (operationOptions.indexOf(input) >= 0) {
+                if (trailingResult === display.innerHTML) {
+                    workingOperation = input;
+                    
+
+                }
+                else if (workingOperation === "") {
+                    //dealing without an operand
+                    workingOperation = input;
+                    trailingResult = display.innerHTML;
+                    display.innerHTML = 0;
+                }
+                
+                else {
+                    // dealing with a set operand
+
+                    trailingResult = calculate(trailingResult, display.innerHTML, workingOperation);
+                    secondaryDisplay.innerHTML = trailingResult;
+                    display.innerHTML = 0;
+                    workingOperation = input;
+                }
+
+            }
+
+            else if (input === "equals") {
+                display.innerHTML = calculate(trailingResult, display.innerHTML, workingOperation);
+                trailingResult = 0;
+                workingOperation = "";
+            }
+
+            else if (input === "decimal") {
+                if (display.innerHTML.indexOf(".") === -1) {
+                    display.innerHTML += ".";
+                }
+            }
+            else if (input === "negative-value")  {
+                if (display.innerHTML.indexOf("-1") === -1) {
+                display.innerHTML ="-" + display.innerHTML;}
+                else if (display.innerHTML.indexOf("-1") > -1) {
+                    display.innerHTML=display.innerHTML.slice(1, display.innerHTML.length);
+                }
             }
             else {
-                display.innerHTML += number;}
+                display.innerHTML += input;
+            }
+            console.log(trailingResult,"<= trailing result", display.innerHTML, "<= display.innerHtml")
         }
 
         function clearDisplay() {
             let display = document.getElementById("display");
             display.innerHTML = 0;
+            trailingResult = 0;
+        }
+
+        function calculate(firstNumber, secondNumber, operation) {
+            let result;
+            firstNumber = parseFloat(firstNumber);
+            secondNumber = parseFloat(secondNumber);
+            switch (operation) {
+                case "add":
+                    result = firstNumber + secondNumber;
+                    break;
+                case "subtract":
+                    result = firstNumber - secondNumber;
+                    break;
+                case "multiply":
+                    result = firstNumber * secondNumber;
+                    break;
+                case "divide":
+                    result = firstNumber / secondNumber;
+                    break;
+                default:
+                    console.log("Error to calculate");
+            }
+            return result.toString();
+
         }
     </script>
 
@@ -28,28 +115,84 @@
 
 <body>
     <div class="container-fluid">
-        <h1>Calculator</h1>
-        <div id="display" class="bg-info text-center text-white py-5 my-3">0</div>
+        <div class="row text-center">
+            <div class="col py-3 my-2">
+                <h1>Calculator</h1>
+                <h3>3 + 5 * 6 - 2 / 4</h3>
+            </div>
+        </div>
 
-        <button type="button" id="one" class="btn btn-primary btn-lg w-100" onclick="updateDisplay(1)">1</button>
-        <button type="button" id="two" class="btn btn-primary btn-lg w-100" onclick="updateDisplay(2)">2</button>
-        <button type="button" id="three" class="btn btn-primary btn-lg w-100" onclick="updateDisplay(3)">3</button>
-        <button type="button" id="four" class="btn btn-primary btn-lg w-100" onclick="updateDisplay(4)">4</button>
-        <button type="button" id="five" class="btn btn-primary btn-lg w-100" onclick="updateDisplay(5)">5</button>
-        <button type="button" id="six" class="btn btn-primary btn-lg w-100" onclick="updateDisplay(6)">6</button>
-        <button type="button" id="seven" class="btn btn-primary btn-lg w-100" onclick="updateDisplay(7)">7</button>
-        <button type="button" id="eight" class="btn btn-primary btn-lg w-100" onclick="updateDisplay(8)">8</button>
-        <button type="button" id="nine" class="btn btn-primary btn-lg w-100" onclick="updateDisplay(9)">9</button>
-        <button type="button" id="decimal" class="btn btn-primary btn-lg w-100" onclick="updateDisplay()">.</button>
-        <button type="button" id="zero" class="btn btn-primary btn-lg w-100" onclick="updateDisplay(0)">0</button>
+        <div class="row text-center">
+            <div class="col">
+                <div id="display" class="bg-info text-white py-4 my-2">0</div>
+                <div id="secondaryDisplay" class="bg-secondary text-white py-4 my-2">0</div>
+            </div>
+        </div>
 
-        <button type="button" id="clear" class="btn btn-warning btn-lg w-100" onclick="clearDisplay()">Clear</button>
+        <div class="row text-center">
+            <div class="col">
+                <button type="button" id="zero" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay(0)">0</button>
+                <button type="button" id="one" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay(1)">1</button>
+                <button type="button" id="two" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay(2)">2</button>
+                <button type="button" id="decimal" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay('decimal')">.</button>
 
-        <button type="button" id="add" class="btn btn-secondary btn-lg w-100" onclick="updateDisplay()">+</button>
-        <button type="button" id="subtract" class="btn btn-secondary btn-lg w-100" onclick="updateDisplay()">-</button>
-        <button type="button" id="multiply" class="btn btn-secondary btn-lg w-100" onclick="updateDisplay()">*</button>
-        <button type="button" id="divide" class="btn btn-secondary btn-lg w-100" onclick="updateDisplay()">/</button>
-        <button type="button" id="equals" class="btn btn-secondary btn-lg w-100" onclick="updateDisplay()">=</button>
+            </div>
+            <div class="col">
+                <button type="button" id="three" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay(3)">3</button>
+                <button type="button" id="four" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay(4)">4</button>
+                <button type="button" id="five" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay(5)">5</button>
+                <button type="button" id="clear" class="mt-1 btn btn-warning btn-lg w-100"
+                    onclick="clearDisplay()">Clear</button>
+
+
+            </div>
+            <div class="col">
+                <button type="button" id="six" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay(6)">6</button>
+                <button type="button" id="seven" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay(7)">7</button>
+                <button type="button" id="eight" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay(8)">8</button>
+                <button type="button" id="nine" class="mt-1 btn btn-primary btn-lg w-100"
+                    onclick="updateDisplay(9)">9</button>
+
+
+            </div>
+        </div>
+        <div class="row text-center mt-1">
+            <div class="col">
+                <button type="button" id="add" class="btn btn-secondary btn-lg w-100"
+                    onclick="updateDisplay('add')">+</button>
+            </div>
+            <div class="col">
+                <button type="button" id="multiply" class="btn btn-secondary btn-lg w-100"
+                    onclick="updateDisplay('multiply')">*</button>
+            </div>
+            <div class="col">
+                <button type="button" id="subtract" class="btn btn-secondary btn-lg w-100"
+                    onclick="updateDisplay('subtract')">-</button>
+            </div>
+            <div class="col">
+                <button type="button" id="equals" class="btn btn-secondary btn-lg w-100"
+                    onclick="updateDisplay('equals')">=</button>
+            </div>
+            <div class="col">
+                <button type="button" id="divide" class="btn btn-secondary btn-lg w-100"
+                    onclick="updateDisplay('divide')">/</button>
+            </div>
+            <div class="col">
+                <button type="button" id="negative-value" class="btn btn-secondary btn-lg w-100"
+                    onclick="updateDisplay('negative-value')">+/-</button>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
