@@ -23,19 +23,20 @@ function App() {
                 date = new Date().getTime();
                 if (date > nextDate) {
                     setDisplayTime((prev) => {
-                        if(prev <= 0 &&  !onBreakVariable) {
+                        if (prev <= 0 && !onBreakVariable) {
                             playBreakAudio();
-                            onBreakVariable=true;
+                            onBreakVariable = true;
                             setOnBreak(true);
                             return breakTime;
                         }
-                        else if(prev <= 0 &&  !onBreakVariable) {
+                        else if (prev <= 0 && !onBreakVariable) {
                             playBreakAudio();
-                            onBreakVariable=false;
+                            onBreakVariable = false;
                             setOnBreak(false);
-                            return sessionTime;}
-                        
-                        
+                            return sessionTime;
+                        }
+
+
                         return prev - 1;
                     });
                     nextDate += second;
@@ -45,10 +46,10 @@ function App() {
             localStorage.clear();
             localStorage.setItem('interval-id', interval);
         }
-        if(timerOn) {
+        if (timerOn) {
             clearInterval(localStorage.getItem('interval-id'));
         }
-setTimerOn(!timerOn);
+        setTimerOn(!timerOn);
     };
 
     const resetTime = () => {
@@ -87,16 +88,18 @@ setTimerOn(!timerOn);
         <div className="center-align">
             <h1>Pomodoro Clock</h1>
             <div className="dual-container">
-                <Length title={"break length"}
-                    changeTime={changeTime}
-                    type={"break"}
-                    time={breakTime}
-                    formatTime={formatTime} />
-                <Length title={"session length"}
-                    changeTime={changeTime}
-                    type={"session"}
-                    time={sessionTime}
-                    formatTime={formatTime} />
+                <div id="break-label">
+                    <LengthBreak title={"break length"}
+                        changeTime={changeTime}
+                        type={"break"}
+                        time={breakTime}
+                        formatTime={formatTime} /></div>
+                <div id="session-label">
+                    <LengthSession title={"session length"}
+                        changeTime={changeTime}
+                        type={"session"}
+                        time={sessionTime}
+                        formatTime={formatTime} /></div>
             </div>
             <h3>{onBreak ? "Break" : "Session"}</h3>
             <h1>{formatTime(displayTime)}</h1>
@@ -111,16 +114,32 @@ setTimerOn(!timerOn);
         </div>);
 }
 
-function Length({ title, changeTime, type, time, formatTime }) {
+function LengthBreak({ title, changeTime, type, time, formatTime }) {
     return (
         <div>
             <h3>{title}</h3>
             <div className="time-sets">
-                <button className="btn-small deep-purple lighten-2" onClick={() => changeTime(-60, type)}>
+                <button id="break-decrement" className="btn-small deep-purple lighten-2" onClick={() => changeTime(-60, type)}>
                     <i className="material-icons">arrow_downward</i>
                 </button>
-                <h3>{formatTime(time)}</h3>
-                <button className="btn-small deep-purple lighten-2" onClick={() => changeTime(+60, type)}>
+                <h3 id="break-length">{formatTime(time)}</h3>
+                <button id="break-increment" className="btn-small deep-purple lighten-2" onClick={() => changeTime(+60, type)}>
+                    <i className="material-icons">arrow_upward</i>
+                </button>
+            </div>
+        </div>
+    );
+}
+function LengthSession({ title, changeTime, type, time, formatTime }) {
+    return (
+        <div>
+            <h3>{title}</h3>
+            <div className="time-sets">
+                <button id="session-decrement" className="btn-small deep-purple lighten-2" onClick={() => changeTime(-60, type)}>
+                    <i className="material-icons">arrow_downward</i>
+                </button>
+                <h3 id="session-length">{formatTime(time)}</h3>
+                <button id="session-increment" className="btn-small deep-purple lighten-2" onClick={() => changeTime(+60, type)}>
                     <i className="material-icons">arrow_upward</i>
                 </button>
             </div>
