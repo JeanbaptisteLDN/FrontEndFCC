@@ -40,6 +40,8 @@ class App extends React.Component {
             clockCount:
               currentTimer === "Session" ? breakCount * 60 : sessionCount * 60
           });
+
+          audio.play();
         } else {
           this.setState({
             clockCount: clockCount - 1
@@ -58,18 +60,22 @@ class App extends React.Component {
       isPlaying: false
     });
     clearInterval(this.loop);
+
+    audio.pause();
+    audio.currentTime = 0;
   };
 
   convertToTime = (count) => {
-    const minutes = Math.floor(count / 60);
+    let minutes = Math.floor(count / 60);
     let seconds = count % 60;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
     seconds = seconds < 10 ? "0" + seconds : seconds;
 
     return `${minutes}:${seconds}`;
   };
   handleBreakDecrease = () => {
     const { breakCount } = this.state;
-    if (breakCount > 0) {
+    if (breakCount > 1) {
       this.setState({
         breakCount: breakCount - 1
       });
@@ -110,14 +116,14 @@ class App extends React.Component {
     } = this.state;
 
     const breakProps = {
-      title: "Break Length",
+      title: "Break",
       count: breakCount,
       handleDecrease: this.handleBreakDecrease,
       handleIncrease: this.handleBreakIncrease
     };
 
     const sessionProps = {
-      title: "Session Length",
+      title: "Session",
       count: sessionCount,
       handleDecrease: this.handleSessionDecrease,
       handleIncrease: this.handleSessionIncrease
@@ -130,15 +136,15 @@ class App extends React.Component {
           <SetTimer {...sessionProps} />
         </div>
         <div className="clock-container">
-          <h1>{currentTimer}</h1>
-          <span>{this.convertToTime(clockCount)}</span>
+          <h1 id="timer-label">{currentTimer}</h1>
+          <span id="time-left">{this.convertToTime(clockCount)}</span>
           <div className="flex actions-wrapper session">
-            <button onClick={this.handlePlayPause}>
+            <button id="start_stop" onClick={this.handlePlayPause}>
               <span class="material-symbols-outlined">
                 {isPlaying ? "pause_circle" : "play_circle"}
               </span>
             </button>
-            <button onClick={this.handleReset}>
+            <button id="reset" onClick={this.handleReset}>
               <span class="material-symbols-outlined">device_reset</span>
             </button>
           </div>{" "}
@@ -148,19 +154,23 @@ class App extends React.Component {
   }
 }
 
-const SetTimer = (props) => (
+const SetTimer = (props) => { 
+  const id= props.title.toLowerCase();
+  return(
   <div className="timer-container">
-    <h2>{props.title}</h2>
+    <h2 id={`${id}-label`}>{props.title} Length</h2>
     <div className="flex actions-wrapper">
-      <button onClick={props.handleDecrease}>
+      <button id={`${id}-decrement`} onClick={props.handleDecrease}>
         <i className="fas fa-minus" />
       </button>
-      <span>{props.count}</span>
-      <button onClick={props.handleIncrease}>
+      <span id ={`${id}-length`}>{props.count}</span>
+      <button id={`${id}-increment`} onClick={props.handleIncrease}>
         <i className="fas fa-plus" />
       </button>
     </div>
   </div>
 );
+}
+const audio = document.getElementById('beep');
 
 ReactDOM.render(<App />, document.getElementById("app"));

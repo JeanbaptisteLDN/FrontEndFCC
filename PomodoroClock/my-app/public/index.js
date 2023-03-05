@@ -1,3 +1,5 @@
+const audio = document.getElementById('beep');
+
 class App extends React.Component {
   state = {
     breakCount: 5,
